@@ -6,18 +6,6 @@ PointTrial::PointTrial(double x, double value, int index) :
 PointTrial::PointTrial(const PointTrial& copy) :
 	x_(copy.x_), value_(copy.value_), index_(copy.index_) {}
 
-PointTrial& PointTrial::operator=(const PointTrial& pointTrial) {
-	if (this == &pointTrial) {
-		return *this;
-	}
-
-	x_ = pointTrial.x_;
-	value_ = pointTrial.value_;
-	index_ = pointTrial.index_;
-
-	return *this;
-}
-
 double PointTrial::getX() {
 	return x_;
 }
@@ -28,6 +16,19 @@ double PointTrial::getValue() {
 
 int PointTrial::getIndex() {
 	return index_;
+}
+
+PointTrial& PointTrial::operator=(const PointTrial& pointTrial) {
+	// Проверка на самоприсваивание.
+	if (this == &pointTrial) {
+		return *this;
+	}
+
+	x_ = pointTrial.x_;
+	value_ = pointTrial.value_;
+	index_ = pointTrial.index_;
+
+	return *this;
 }
 
 bool operator<(const PointTrial& lhs, const PointTrial& rhs) {

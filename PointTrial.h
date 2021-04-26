@@ -4,13 +4,13 @@ public:
 
 	PointTrial(const PointTrial& copy);
 
-	PointTrial& operator= (const PointTrial& pointTrial);
-
 	double getX();
 
 	double getValue();
 
 	int getIndex();
+
+	PointTrial& operator= (const PointTrial& pointTrial);
 
 	friend bool operator< (const PointTrial& lhs, const PointTrial& rhs);
 
