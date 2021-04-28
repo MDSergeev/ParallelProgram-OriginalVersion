@@ -1,6 +1,5 @@
 #include <vector>
 #include <set>
-#include <functional>
 #include "PointTrial.h"
 
 typedef std::vector<std::function<double(double)>> Funcs;
@@ -23,6 +22,7 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	PointTrial Run();
+
 private:
 	// Левый конец отрезка.
 	double leftBound_;
@@ -64,7 +64,7 @@ private:
 
 	// Определение параметра Z алгоритма.
 	// Правило 4.
-	void calculateZ(PointTrial bestTrial);
+	void calculateZ(const PointTrial& bestTrial);
 
 	// Поиск интервала с максимальной характеристикой R.
 	// Правило 5-7.
@@ -72,4 +72,8 @@ private:
 
 	// Проведение испытания в точке x.
 	PointTrial newTrial(double x);
+
+	// Проведение нового испытания для интервала interval.
+	// Правило 8.
+	PointTrial newTrial(const std::vector<PointTrial>& interval);
 };
