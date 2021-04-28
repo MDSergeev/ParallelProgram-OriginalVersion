@@ -18,7 +18,11 @@ public:
 	/// <param name="funcs">Функции ограничения и целевая функция.</param>
 	IndexMethod(double leftBound, double rightBound, double eps, double paramR, const Funcs& funcs);
 
-
+	/// <summary>
+	/// Запускает процесс происка.
+	/// </summary>
+	/// <returns></returns>
+	PointTrial Run();
 private:
 	// Левый конец отрезка.
 	double leftBound_;
@@ -41,14 +45,31 @@ private:
 	// Точки с фиксированным индексом (множество I).
 	std::vector<std::set<PointTrial>> fixedIndex_;
 
-	// Нижние границы для каждого индекса (множество mu(v)).
-	std::vector<double> lowerBounds_;
+	// Максимальные значения относительных первых разностей (множество mu(v)).
+	std::vector<double> maxValuesDifference_;
 
-	// Параметр Z алгоритма.
+	// Параметр Z* алгоритма.
 	std::vector<double> paramsZ_;
 
 	// Максимальный индекс.
 	int maxIndex_;
 
+	// Определение точек с фиксированным индексом (множества I).
+	// Правило 2.
+	void calculateFixedIndex();
 
+	// Определение максимальных значений относительных первых разностей (множество mu(v)).
+	// Правило 3.
+	void calculateMaxValuesDifference();
+
+	// Определение параметра Z алгоритма.
+	// Правило 4.
+	void calculateZ(PointTrial bestTrial);
+
+	// Поиск интервала с максимальной характеристикой R.
+	// Правило 5-7.
+	std::vector<PointTrial> calculateMaxR();
+
+	// Проведение испытания в точке x.
+	PointTrial newTrial(double x);
 };
