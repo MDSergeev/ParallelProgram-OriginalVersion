@@ -4,7 +4,7 @@ PointTrial::PointTrial(double x, double value, int index) :
 	x_(x), value_(value), index_(index) {}
 
 PointTrial::PointTrial() : 
-	x_(NULL), value_(NULL), index_(NULL) {}
+	x_(NULL), value_(NULL), index_(-1) {}
 
 PointTrial::PointTrial(const PointTrial& copy) :
 	x_(copy.x_), value_(copy.value_), index_(copy.index_) {}

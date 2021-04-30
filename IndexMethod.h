@@ -37,7 +37,7 @@ private:
 	Funcs funcs_;
 
 	// Параметр надёжности R.
-	std::vector<double> paramsR_;
+	double paramR_;
 
 	// Упорядоченное множество точек, в которых производились испытания.
 	std::set<PointTrial> trials_;
