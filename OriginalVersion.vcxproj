@@ -139,11 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GridSearchMethod.cpp" />
     <ClCompile Include="IndexMethod.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PointTrial.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GridSearchMethod.h" />
     <ClInclude Include="IndexMethod.h" />
     <ClInclude Include="PointTrial.h" />
   </ItemGroup>

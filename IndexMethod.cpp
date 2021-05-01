@@ -1,5 +1,4 @@
 #include "IndexMethod.h"
-#include <stdexcept>
 
 IndexMethod::IndexMethod(double leftBound, double rightBound, double eps, double paramR, const Funcs& funcs) {
 	if (leftBound < rightBound) {
@@ -36,11 +35,9 @@ IndexMethod::IndexMethod(double leftBound, double rightBound, double eps, double
 	trials_.insert(PointTrial(rightBound_, NULL, -1));
 
 	// Задаём размеры массивов (по числу функций).
-	fixedIndex_.resize(funcs_.size());
-	maxValuesDifference_.resize(funcs_.size());
-	paramsZ_.resize(funcs_.size());
-
-	std::fill(maxValuesDifference_.begin(), maxValuesDifference_.end(), 1);
+	fixedIndex_.resize(funcs_.size(), {});
+	maxValuesDifference_.resize(funcs_.size(), 1.0);
+	paramsZ_.resize(funcs_.size(), 0.0);
 
 	maxIndex_ = -1;
 }
@@ -135,7 +132,8 @@ void IndexMethod::calculateZ(const PointTrial& bestTrial)
 
 std::vector<PointTrial> IndexMethod::calculateMaxR()
 {
-	std::vector<PointTrial> result(2);
+	PointTrial bestPrev = PointTrial(NULL, NULL, -1);
+	PointTrial bestCurr = PointTrial(NULL, NULL, -1);
 	double maxR = -HUGE_VAL;
 
 	std::set<PointTrial>::const_iterator itPrev = trials_.cbegin();
@@ -167,22 +165,22 @@ std::vector<PointTrial> IndexMethod::calculateMaxR()
 
 		if (currR > maxR) {
 			maxR = currR;
-			result[0] = pointPrev;
-			result[1] = pointCurr;
+			bestPrev = pointPrev;
+			bestCurr = pointCurr;
 		}
 	}
 
-	return result;
+	return std::vector<PointTrial>({bestPrev, bestCurr});
 }
 
 PointTrial IndexMethod::newTrial(double x)
 {
-	int index = 0;
-	double value = funcs_[0](x);
-	for (std::size_t i = 1; i < funcs_.size(); ++i) {
+	int index = -1;
+	double value = NULL;
+	for (std::size_t i = 0; i < funcs_.size(); ++i) {
 		index = i;
 		value = funcs_[i](x);
-		if (value > 0) {
+		if (value >= 0) {
 			break;
 		}
 	}
@@ -203,6 +201,3 @@ PointTrial IndexMethod::newTrial(const std::vector<PointTrial>& interval)
 		return newTrial(newX);
 	}
 }
-
-
-

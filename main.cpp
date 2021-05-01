@@ -4,7 +4,9 @@
 #include <vector>
 #include <functional>
 #include <cmath>
+#include <iomanip>
 #include "IndexMethod.h"
+#include "GridSearchMethod.h"
 
 double f1(double x) {
 	return exp(-0.5 * x) * sin(6 * x - 1.5);
@@ -41,12 +43,20 @@ int main() {
 	funcs.push_back(fi);
 	
 	IndexMethod im(a, b, eps, r, funcs);
-	PointTrial bestTrial = im.Run();
-	std::cout << "BEST TRIAL" << std::endl;
-	std::cout << "x = " << bestTrial.getX() << std::endl
-		<< "value = " << bestTrial.getValue() << std::endl
-		<< "index = " << bestTrial.getIndex();
-		
-
+	PointTrial imBestTrial = im.Run();
+	std::cout << "BEST TRIAL INDEX METHOD" << std::endl;
+	std::cout << std:: fixed << std::setprecision(5)
+		<< "x = " << imBestTrial.getX() << " | "
+		<< "value = " << imBestTrial.getValue() << " | "
+		<< "index = " << imBestTrial.getIndex() << " |" << std:: endl;
+	
+	GridSearchMethod gsm(a, b, eps, funcs);
+	PointTrial gsmBestTrial = gsm.Run();
+	std::cout << "BEST TRIAL GRID SEARCH METHOD" << std::endl;
+	std::cout << std:: fixed << std::setprecision(5)
+		<< "x = " << gsmBestTrial.getX() << " | "
+		<< "value = " << gsmBestTrial.getValue() << " | "
+		<< "index = " << gsmBestTrial.getIndex() << " |" << std::endl;
+	
 	return 0;
 }

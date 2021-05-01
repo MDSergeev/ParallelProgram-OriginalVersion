@@ -1,6 +1,9 @@
+#pragma once
+#include "PointTrial.h"
 #include <vector>
 #include <set>
-#include "PointTrial.h"
+#include <stdexcept>
+#include <functional>
 
 typedef std::vector<std::function<double(double)>> Funcs;
 

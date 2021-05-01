@@ -1,10 +1,8 @@
-#include <functional>
+#pragma once
 
 class PointTrial {
 public:
 	explicit PointTrial(double x, double value, int index);
-
-	PointTrial();
 
 	PointTrial(const PointTrial& copy);
 
