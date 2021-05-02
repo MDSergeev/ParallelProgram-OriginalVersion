@@ -6,11 +6,11 @@ public:
 
 	PointTrial(const PointTrial& copy);
 
-	double getX() const;
+	double x() const;
 
-	double getValue() const;
+	double value() const;
 
-	int getIndex() const;
+	int index() const;
 
 	PointTrial& operator= (const PointTrial& pointTrial);
 

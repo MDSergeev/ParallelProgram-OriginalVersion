@@ -6,15 +6,15 @@ PointTrial::PointTrial(double x, double value, int index) :
 PointTrial::PointTrial(const PointTrial& copy) :
 	x_(copy.x_), value_(copy.value_), index_(copy.index_) {}
 
-double PointTrial::getX() const {
+double PointTrial::x() const {
 	return x_;
 }
 
-double PointTrial::getValue() const {
+double PointTrial::value() const {
 	return value_;
 }
 
-int PointTrial::getIndex() const {
+int PointTrial::index() const {
 	return index_;
 }
 
