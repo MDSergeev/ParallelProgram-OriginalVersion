@@ -5,7 +5,7 @@
 #include <functional>
 #include <cmath>
 #include <iomanip>
-#include "IndexMethod.h"
+#include "OriginalIndexMethod.h"
 #include "GridSearchMethod.h"
 
 double f1(double x) {
@@ -42,7 +42,7 @@ int main() {
 	funcs.push_back(f2);
 	funcs.push_back(fi);
 	
-	IndexMethod im(a, b, eps, r, funcs);
+	OriginalIndexMethod im(a, b, eps, r, funcs);
 	PointTrial imBestTrial = im.Run();
 	std::cout << "BEST TRIAL INDEX METHOD" << std::endl;
 	std::cout << std:: fixed << std::setprecision(5)
