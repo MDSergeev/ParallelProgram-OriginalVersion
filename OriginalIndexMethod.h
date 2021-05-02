@@ -8,7 +8,7 @@
 typedef std::vector<std::function<double(double)>> Funcs;
 
 
-class IndexMethod {
+class OriginalIndexMethod {
 public:
 	/// <summary>
 	/// Инициализирует новый объект класса IndexMethod.
@@ -18,7 +18,7 @@ public:
 	/// <param name="eps">Точность поиска.</param>
 	/// <param name="paramR">Параметр надежности.</param>
 	/// <param name="funcs">Функции ограничения и целевая функция.</param>
-	IndexMethod(double leftBound, double rightBound, double eps, double paramR, const Funcs& funcs);
+	OriginalIndexMethod(double leftBound, double rightBound, double eps, double paramR, const Funcs& funcs);
 
 	/// <summary>
 	/// Запускает процесс происка.

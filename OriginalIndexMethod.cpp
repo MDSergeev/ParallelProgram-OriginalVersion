@@ -1,6 +1,6 @@
-#include "IndexMethod.h"
+#include "OriginalIndexMethod.h"
 
-IndexMethod::IndexMethod(double leftBound, double rightBound, double eps, double paramR, const Funcs& funcs) {
+OriginalIndexMethod::OriginalIndexMethod(double leftBound, double rightBound, double eps, double paramR, const Funcs& funcs) {
 	if (leftBound < rightBound) {
 		leftBound_ = leftBound;
 		rightBound_ = rightBound;
@@ -42,7 +42,7 @@ IndexMethod::IndexMethod(double leftBound, double rightBound, double eps, double
 	maxIndex_ = -1;
 }
 
-PointTrial IndexMethod::Run()
+PointTrial OriginalIndexMethod::Run()
 {
 	// Первое испытание проводится в серединной точке.
 	PointTrial bestTrial = newTrial((rightBound_ + leftBound_) / 2);
@@ -74,7 +74,7 @@ PointTrial IndexMethod::Run()
 	return bestTrial;
 }
 
-void IndexMethod::calculateFixedIndex()
+void OriginalIndexMethod::calculateFixedIndex()
 {
 	// Очистка множества I.
 	for (std::vector<std::set<PointTrial>>::iterator it = fixedIndex_.begin(); it != fixedIndex_.end(); ++it) {
@@ -87,7 +87,7 @@ void IndexMethod::calculateFixedIndex()
 	}
 }
 
-void IndexMethod::calculateMaxValuesDifference()
+void OriginalIndexMethod::calculateMaxValuesDifference()
 {
 	// Внешний цикл - по каждому номеру индекса.
 	for (std::size_t i = 0; i < fixedIndex_.size(); ++i) {
@@ -118,7 +118,7 @@ void IndexMethod::calculateMaxValuesDifference()
 	}
 }
 
-void IndexMethod::calculateZ(const PointTrial& bestTrial)
+void OriginalIndexMethod::calculateZ(const PointTrial& bestTrial)
 {
 	for (std::size_t i = 0; i < paramsZ_.size(); ++i) {
 		if (i == maxIndex_) {
@@ -130,7 +130,7 @@ void IndexMethod::calculateZ(const PointTrial& bestTrial)
 	}
 }
 
-std::vector<PointTrial> IndexMethod::calculateMaxR()
+std::vector<PointTrial> OriginalIndexMethod::calculateMaxR()
 {
 	PointTrial bestPrev = PointTrial(NULL, NULL, -1);
 	PointTrial bestCurr = PointTrial(NULL, NULL, -1);
@@ -173,7 +173,7 @@ std::vector<PointTrial> IndexMethod::calculateMaxR()
 	return std::vector<PointTrial>({bestPrev, bestCurr});
 }
 
-PointTrial IndexMethod::newTrial(double x)
+PointTrial OriginalIndexMethod::newTrial(double x)
 {
 	int index = -1;
 	double value = NULL;
@@ -188,7 +188,7 @@ PointTrial IndexMethod::newTrial(double x)
 	return PointTrial(x, value, index);
 }
 
-PointTrial IndexMethod::newTrial(const std::vector<PointTrial>& interval)
+PointTrial OriginalIndexMethod::newTrial(const std::vector<PointTrial>& interval)
 {
 	if (interval[0].getIndex() != interval[1].getIndex()) {
 		double newX = (interval[0].getX() + interval[1].getX()) / 2;
