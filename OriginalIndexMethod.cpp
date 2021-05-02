@@ -1,34 +1,7 @@
 #include "OriginalIndexMethod.h"
 
-OriginalIndexMethod::OriginalIndexMethod(double leftBound, double rightBound, double eps, double paramR, const Funcs& funcs) {
-	if (leftBound < rightBound) {
-		leftBound_ = leftBound;
-		rightBound_ = rightBound;
-	}
-	else {
-		throw std::invalid_argument::invalid_argument("Left bound is more than right bound");
-	}
-
-	if (eps > 0) {
-		eps_ = eps;
-	}
-	else {
-		throw std::invalid_argument::invalid_argument("eps <= 0");
-	}
-
-	if (!funcs.empty()) {
-		funcs_ = funcs;
-	}
-	else {
-		throw std::invalid_argument::invalid_argument("List of funcs is empty");
-	}
-
-	if (paramR > 1) {
-		paramR_ = paramR;
-	}
-	else {
-		throw std::invalid_argument::invalid_argument("Parameter of reliability is less than 1");
-	}
+OriginalIndexMethod::OriginalIndexMethod(double leftBound, double rightBound, double eps, double paramR, const Funcs& funcs) :
+	IndexMethod(leftBound, rightBound, eps, paramR, funcs) {
 
 	// «аносим граничные точки.
 	trials_.insert(PointTrial(leftBound_, NULL, -1));
@@ -47,7 +20,7 @@ PointTrial OriginalIndexMethod::Run()
 	// ѕервое испытание проводитс€ в серединной точке.
 	PointTrial bestTrial = newTrial((rightBound_ + leftBound_) / 2);
 	trials_.insert(bestTrial);
-	maxIndex_ = bestTrial.getIndex();
+	maxIndex_ = bestTrial.index();
 
 	bool stop = false;
 	while (!stop) {
@@ -56,7 +29,7 @@ PointTrial OriginalIndexMethod::Run()
 		calculateZ(bestTrial);
 		
 		std::vector<PointTrial> currInterval = calculateMaxR();
-		if (fabs(currInterval[1].getX() - currInterval[0].getX()) < eps_) {
+		if (fabs(currInterval[1].x() - currInterval[0].x()) < eps_) {
 			stop = true;
 		}
 		else {
@@ -64,10 +37,10 @@ PointTrial OriginalIndexMethod::Run()
 			PointTrial currTrial = newTrial(currInterval);
 			// ƒобавл€ем новое испытание во множество испытаний.
 			trials_.insert(currTrial);
-			if ((currTrial.getIndex() > maxIndex_)
-				|| (currTrial.getIndex() == maxIndex_ && currTrial.getValue() < bestTrial.getValue())) {
+			if ((currTrial.index() > maxIndex_)
+				|| (currTrial.index() == maxIndex_ && currTrial.value() < bestTrial.value())) {
 				bestTrial = currTrial;
-				maxIndex_ = currTrial.getIndex();
+				maxIndex_ = currTrial.index();
 			}
 		}
 	}
@@ -83,7 +56,7 @@ void OriginalIndexMethod::calculateFixedIndex()
 
 	// «аполнение множества I дл€ всех внутренних точек.
 	for (std::set<PointTrial>::const_iterator it = ++trials_.cbegin(); it != --trials_.cend(); ++it) {
-		fixedIndex_[(*it).getIndex()].insert(*it);
+		fixedIndex_[(*it).index()].insert(*it);
 	}
 }
 
@@ -103,7 +76,7 @@ void OriginalIndexMethod::calculateMaxValuesDifference()
 			std::set<PointTrial>::const_iterator itCurr = ++fixedIndex_[i].cbegin();
 			for (; itPrev != --fixedIndex_[i].cend() && itCurr != fixedIndex_[i].cend(); ++itPrev, ++itCurr) {
 				// ¬ычисл€ем |z(i) - z(i-1)| / (x(i) - x(i-1)).
-				double tempM = fabs((*itCurr).getValue() - (*itPrev).getValue()) / ((*itCurr).getX() - (*itPrev).getX());
+				double tempM = fabs((*itCurr).value() - (*itPrev).value()) / ((*itCurr).x() - (*itPrev).x());
 				if (tempM > maxM) {
 					maxM = tempM;
 				}
@@ -122,7 +95,7 @@ void OriginalIndexMethod::calculateZ(const PointTrial& bestTrial)
 {
 	for (std::size_t i = 0; i < paramsZ_.size(); ++i) {
 		if (i == maxIndex_) {
-			paramsZ_[i] = bestTrial.getValue();
+			paramsZ_[i] = bestTrial.value();
 		}
 		else {
 			paramsZ_[i] = 0;
@@ -146,21 +119,21 @@ std::vector<PointTrial> OriginalIndexMethod::calculateMaxR()
 		PointTrial pointCurr = *itCurr;	
 
 		double currR = 0;
-		double delta = pointCurr.getX() - pointPrev.getX();
+		double delta = pointCurr.x() - pointPrev.x();
 
-		if (pointPrev.getIndex() == pointCurr.getIndex()) {
-			int index = pointPrev.getIndex();
+		if (pointPrev.index() == pointCurr.index()) {
+			int index = pointPrev.index();
 			currR = delta
-				+ pow(pointCurr.getValue() - pointPrev.getValue(), 2) / (delta * pow(paramR_, 2) * pow(maxValuesDifference_[index], 2)) 
-				- 2 * (pointCurr.getValue() + pointPrev.getValue() - 2 * paramsZ_[index]) / (paramR_ * maxValuesDifference_[index]);
+				+ pow(pointCurr.value() - pointPrev.value(), 2) / (delta * pow(paramR_, 2) * pow(maxValuesDifference_[index], 2)) 
+				- 2 * (pointCurr.value() + pointPrev.value() - 2 * paramsZ_[index]) / (paramR_ * maxValuesDifference_[index]);
 		}
-		else if (pointPrev.getIndex() < pointCurr.getIndex()) {
-			int index = pointCurr.getIndex();
-			currR = 2 * delta - 4 * (pointCurr.getValue() - paramsZ_[index]) / (paramR_ * maxValuesDifference_[index]);
+		else if (pointPrev.index() < pointCurr.index()) {
+			int index = pointCurr.index();
+			currR = 2 * delta - 4 * (pointCurr.value() - paramsZ_[index]) / (paramR_ * maxValuesDifference_[index]);
 		}
 		else {
-			int index = pointPrev.getIndex();
-			currR = 2 * delta - 4 * (pointPrev.getValue() - paramsZ_[index]) / (paramR_ * maxValuesDifference_[index]);
+			int index = pointPrev.index();
+			currR = 2 * delta - 4 * (pointPrev.value() - paramsZ_[index]) / (paramR_ * maxValuesDifference_[index]);
 		}
 
 		if (currR > maxR) {
@@ -190,14 +163,14 @@ PointTrial OriginalIndexMethod::newTrial(double x)
 
 PointTrial OriginalIndexMethod::newTrial(const std::vector<PointTrial>& interval)
 {
-	if (interval[0].getIndex() != interval[1].getIndex()) {
-		double newX = (interval[0].getX() + interval[1].getX()) / 2;
+	if (interval[0].index() != interval[1].index()) {
+		double newX = (interval[0].x() + interval[1].x()) / 2;
 		return newTrial(newX);
 	}
 	else {
-		int index = interval[0].getIndex();
-		double newX = (interval[0].getX() + interval[1].getX()) / 2
-			- (interval[0].getValue() - interval[1].getValue()) / (2 * paramR_ * maxValuesDifference_[index]);
+		int index = interval[0].index();
+		double newX = (interval[0].x() + interval[1].x()) / 2
+			- (interval[0].value() - interval[1].value()) / (2 * paramR_ * maxValuesDifference_[index]);
 		return newTrial(newX);
 	}
 }

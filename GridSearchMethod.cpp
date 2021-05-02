@@ -33,8 +33,8 @@ PointTrial GridSearchMethod::Run()
 	while (currX <= rightBound_)
 	{
 		PointTrial currTrial = newTrial(currX);
-		if ((currTrial.getIndex() > bestTrial.getIndex())
-			|| (currTrial.getIndex() == bestTrial.getIndex() && currTrial.getValue() < bestTrial.getValue())) {
+		if ((currTrial.index() > bestTrial.index())
+			|| (currTrial.index() == bestTrial.index() && currTrial.value() < bestTrial.value())) {
 			bestTrial = currTrial;
 		}
 		currX += eps_;

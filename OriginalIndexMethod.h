@@ -1,14 +1,9 @@
 #pragma once
-#include "PointTrial.h"
-#include <vector>
+#include "IndexMethod.h"
 #include <set>
-#include <stdexcept>
-#include <functional>
-
-typedef std::vector<std::function<double(double)>> Funcs;
 
 
-class OriginalIndexMethod {
+class OriginalIndexMethod : public IndexMethod {
 public:
 	/// <summary>
 	/// Инициализирует новый объект класса IndexMethod.
@@ -24,23 +19,9 @@ public:
 	/// Запускает процесс происка.
 	/// </summary>
 	/// <returns></returns>
-	PointTrial Run();
+	PointTrial Run() override;
 
 private:
-	// Левый конец отрезка.
-	double leftBound_;
-
-	// Правый конец отрезка.
-	double rightBound_;
-
-	// Заданная точность поиска.
-	double eps_;
-
-	// Функции ограничения и целевая функция.
-	Funcs funcs_;
-
-	// Параметр надёжности R.
-	double paramR_;
 
 	// Упорядоченное множество точек, в которых производились испытания.
 	std::set<PointTrial> trials_;
