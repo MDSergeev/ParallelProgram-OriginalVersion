@@ -6,6 +6,9 @@
 
 typedef std::vector<std::function<double(double)>> Funcs;
 
+/// <summary>
+/// Абстрактный класс для индексной оптимизации.
+/// </summary>
 class IndexMethod {
 public:
 	/// <summary>

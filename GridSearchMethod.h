@@ -6,6 +6,9 @@
 
 typedef std::vector<std::function<double(double)>> Funcs;
 
+/// <summary>
+/// Класс для переборного метода оптимизации.
+/// </summary>
 class GridSearchMethod {
 public:
 	/// <summary>

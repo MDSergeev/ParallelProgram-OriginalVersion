@@ -2,7 +2,9 @@
 #include "IndexMethod.h"
 #include <set>
 
-
+/// <summary>
+/// Последовательный индексный метод оптимизации.
+/// </summary>
 class OriginalIndexMethod : public IndexMethod {
 public:
 	/// <summary>

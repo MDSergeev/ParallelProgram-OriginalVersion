@@ -1,5 +1,8 @@
 #pragma once
 
+/// <summary>
+/// Класс для хранения испытания в точке.
+/// </summary>
 class PointTrial {
 public:
 	explicit PointTrial(double x, double value, int index);
