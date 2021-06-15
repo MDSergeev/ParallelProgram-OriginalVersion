@@ -1,6 +1,7 @@
 #pragma once
 #include "PointTrial.h"
 #include <vector>
+#include <set>
 #include <stdexcept>
 #include <functional>
 

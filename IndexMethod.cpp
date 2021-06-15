@@ -30,4 +30,6 @@ IndexMethod::IndexMethod(double leftBound, double rightBound, double eps, double
 	else {
 		throw std::invalid_argument::invalid_argument("Parameter of reliability is less than 1");
 	}
+
+
 }

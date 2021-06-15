@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <vector>
-#include <functional>
 #include <cmath>
 #include <iomanip>
 #include "OriginalIndexMethod.h"
@@ -61,7 +60,7 @@ int main() {
 	std::cout << std:: fixed << std::setprecision(5)
 		<< "x = " << gsmBestTrial.x() << " | "
 		<< "value = " << gsmBestTrial.value() << " | "
-		<< "index = " << gsmBestTrial.index() << " |" << std::endl;
+		<< "index = " << gsmBestTrial.index() << " |";
 	
 	return 0;
 }

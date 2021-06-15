@@ -94,7 +94,7 @@ void OriginalIndexMethod::calculateMaxValuesDifference()
 void OriginalIndexMethod::calculateZ(const PointTrial& bestTrial)
 {
 	for (std::size_t i = 0; i < paramsZ_.size(); ++i) {
-		if (i == maxIndex_) {
+		if (i == bestTrial.index()) {
 			paramsZ_[i] = bestTrial.value();
 		}
 		else {

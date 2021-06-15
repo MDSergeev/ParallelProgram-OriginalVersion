@@ -1,14 +1,14 @@
 #pragma once
 #include "IndexMethod.h"
-#include <set>
 
 /// <summary>
 /// Последовательный индексный метод оптимизации.
 /// </summary>
 class OriginalIndexMethod : public IndexMethod {
 public:
+
 	/// <summary>
-	/// Инициализирует новый объект класса IndexMethod.
+	/// Инициализирует новый объект класса OriginalIndexMethod.
 	/// </summary>
 	/// <param name="leftBound">Левый конец отрезка.</param>
 	/// <param name="rightBound">Правый конец отрезка.</param>
