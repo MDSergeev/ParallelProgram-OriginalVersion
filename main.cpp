@@ -4,8 +4,10 @@
 #include <vector>
 #include <cmath>
 #include <iomanip>
+#include <ctime>
 #include "OriginalIndexMethod.h"
 #include "GridSearchMethod.h"
+#include "ParallelIndexMethod.h"
 
 double f0(double x) {
 	return exp(-0.5 * x) * sin(6 * x - 1.5);
@@ -47,20 +49,34 @@ int main() {
 	Funcs funcs{f0, f1, f2, f3, fi};
 	
 	OriginalIndexMethod im(a, b, eps, r, funcs);
+	unsigned int start_time = clock();
 	PointTrial imBestTrial = im.Run();
-	std::cout << "BEST TRIAL INDEX METHOD" << std::endl;
+	unsigned int end_time = clock();
+	std::cout << "BEST TRIAL ORIGINAL INDEX METHOD" << std::endl;
 	std::cout << std:: fixed << std::setprecision(5)
 		<< "x = " << imBestTrial.x() << " | "
 		<< "value = " << imBestTrial.value() << " | "
 		<< "index = " << imBestTrial.index() << " |" << std:: endl;
+	std::cout << "TIME = " << end_time - start_time << "ms" << std::endl;
 	
+	ParallelIndexMethod pim(a, b, eps, r, funcs, 6);
+	start_time = clock();
+	PointTrial pimBestTrial = pim.Run();
+	end_time = clock();
+	std::cout << "BEST TRIAL PARALLEL INDEX METHOD" << std::endl;
+	std::cout << std::fixed << std::setprecision(5)
+		<< "x = " << pimBestTrial.x() << " | "
+		<< "value = " << pimBestTrial.value() << " | "
+		<< "index = " << pimBestTrial.index() << " |" << std::endl;
+	std::cout << "TIME = " << end_time - start_time << "ms" << std::endl;
+
 	GridSearchMethod gsm(a, b, eps, funcs);
 	PointTrial gsmBestTrial = gsm.Run();
 	std::cout << "BEST TRIAL GRID SEARCH METHOD" << std::endl;
-	std::cout << std:: fixed << std::setprecision(5)
+	std::cout << std::fixed << std::setprecision(5)
 		<< "x = " << gsmBestTrial.x() << " | "
 		<< "value = " << gsmBestTrial.value() << " | "
-		<< "index = " << gsmBestTrial.index() << " |";
-	
+		<< "index = " << gsmBestTrial.index() << " |" << std::endl;
+
 	return 0;
 }

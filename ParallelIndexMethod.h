@@ -44,7 +44,7 @@ private:
 	std::vector<std::thread> threads_;
 
 	// Мьютексы.
-	std::mutex mtx1_, mtx2_;
+	std::mutex mtx1_, mtx2_, mtx3_;
 
 	// Флаг окончания вычислений.
 	bool isStop;

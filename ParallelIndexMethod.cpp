@@ -1,4 +1,5 @@
 #include "ParallelIndexMethod.h"
+#include <random>
 
 ParallelIndexMethod::ParallelIndexMethod(double leftBound, double rightBound, double eps, double paramR, const Funcs& funcs, int N) :
 	IndexMethod(leftBound, rightBound, eps, paramR, funcs) {
@@ -14,14 +15,26 @@ ParallelIndexMethod::ParallelIndexMethod(double leftBound, double rightBound, do
 
 PointTrial ParallelIndexMethod::Run()
 {
-	// TODO
+	double startPoint = leftBound_;
+	double interval = (rightBound_ - leftBound_) / ((double)N_ + 1);
+
+	for (int i = 0; i < N_; ++i) {
+		startPoint += interval;
+		threads_.push_back(std::thread(&ParallelIndexMethod::threadRun, this, startPoint));
+	}
+
+	for (std::thread &thr : threads_) {
+		thr.join();
+	}
+
+	return bestTrial_;
 }
 
 void ParallelIndexMethod::threadRun(double startPoint)
 {
 	mtx1_.lock();
 	// Получаем множество точек для текущего потока.
-	std::set<PointTrial> threadTrials(trials_);
+	std::set<PointTrial> threadTrials = trials_;
 
 	// Проводим первое испытание в заданной точке.
 	PointTrial startTrial = newTrial(startPoint);
@@ -38,7 +51,48 @@ void ParallelIndexMethod::threadRun(double startPoint)
 	mtx1_.unlock();
 
 	while (!isStop) {
-		// TODO
+		// Вычисляем множество I.
+		std::vector<std::set<PointTrial>> fixedIndex = calculateFixedIndex(threadTrials);
+		// Вычисляем множество mu(v)ю
+		std::vector<double> maxValuesDifference = calculateMaxValuesDifference(fixedIndex);
+		mtx1_.lock();
+		// Определяем параметр Z алгоритма.
+		std::vector<double> paramsZ = calculateZ(bestTrial_);
+		mtx1_.unlock();
+		// Ищем интервал с максимальной характеристикой R.
+		std::vector<PointTrial> currInterval = calculateMaxR(threadTrials, maxValuesDifference, paramsZ);
+
+		// Заканчиваем вычисления, если интервал меньше точности.
+		if (fabs(currInterval[1].x() - currInterval[0].x()) < eps_) {
+			mtx2_.lock();
+			isStop = true;
+			mtx2_.unlock();
+		}
+		else {
+			// Вычисляем новое испытание.
+			PointTrial currTrial = newTrial(currInterval, maxValuesDifference);
+			
+			mtx1_.lock();
+			if ((currTrial.index() > maxIndex_)
+				|| (currTrial.index() == maxIndex_ && currTrial.value() < bestTrial_.value())) {
+				bestTrial_ = currTrial;
+				maxIndex_ = currTrial.index();
+			}
+			auto it = trials_.insert(currTrial);
+			
+			if (!it.second) {
+				if (rand() % 2 == 0) {
+					trials_.erase(currInterval[0]);
+				}
+				else {
+					trials_.erase(currInterval[1]);
+				}
+			}
+			
+			// Копируем точки испытаний.
+			threadTrials = trials_;
+			mtx1_.unlock();
+		}
 	}
 }
 
