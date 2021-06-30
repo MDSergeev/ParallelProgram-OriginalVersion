@@ -35,63 +35,54 @@ void ParallelIndexMethod::threadRun(double startPoint)
 	mtx1_.lock();
 	// Получаем множество точек для текущего потока.
 	std::set<PointTrial> threadTrials = trials_;
-
 	// Проводим первое испытание в заданной точке.
 	PointTrial startTrial = newTrial(startPoint);
 	// Заносим испытание в множество.
 	threadTrials.insert(startTrial);
 	trials_.insert(startTrial);
+	mtx1_.unlock();
 
+	mtx3_.lock();
 	if ((startTrial.index() > maxIndex_)
 		|| (startTrial.index() == maxIndex_ && startTrial.value() < bestTrial_.value())) {
 		bestTrial_ = startTrial;
 		maxIndex_ = startTrial.index();
 	}
-	
-	mtx1_.unlock();
+	mtx3_.unlock();
 
 	while (!isStop) {
 		// Вычисляем множество I.
 		std::vector<std::set<PointTrial>> fixedIndex = calculateFixedIndex(threadTrials);
 		// Вычисляем множество mu(v)ю
 		std::vector<double> maxValuesDifference = calculateMaxValuesDifference(fixedIndex);
-		mtx1_.lock();
+		mtx3_.lock();
 		// Определяем параметр Z алгоритма.
 		std::vector<double> paramsZ = calculateZ(bestTrial_);
-		mtx1_.unlock();
+		mtx3_.unlock();
 		// Ищем интервал с максимальной характеристикой R.
 		std::vector<PointTrial> currInterval = calculateMaxR(threadTrials, maxValuesDifference, paramsZ);
 
 		// Заканчиваем вычисления, если интервал меньше точности.
 		if (fabs(currInterval[1].x() - currInterval[0].x()) < eps_) {
-			mtx2_.lock();
 			isStop = true;
-			mtx2_.unlock();
 		}
 		else {
 			// Вычисляем новое испытание.
 			PointTrial currTrial = newTrial(currInterval, maxValuesDifference);
 			
-			mtx1_.lock();
+			mtx3_.lock();
 			if ((currTrial.index() > maxIndex_)
 				|| (currTrial.index() == maxIndex_ && currTrial.value() < bestTrial_.value())) {
 				bestTrial_ = currTrial;
 				maxIndex_ = currTrial.index();
 			}
-			auto it = trials_.insert(currTrial);
-			/*
-			if (!it.second) {
-				if (rand() % 2 == 0) {
-					trials_.erase(currInterval[0]);
-				}
-				else {
-					trials_.erase(currInterval[1]);
-				}
-			}
-			*/
-			// Копируем точки испытаний.
+			mtx3_.unlock();
+
+			mtx1_.lock();
+			trials_.insert(currTrial);
 			threadTrials = trials_;
 			mtx1_.unlock();
+			
 		}
 	}
 }
