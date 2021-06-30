@@ -79,7 +79,7 @@ void ParallelIndexMethod::threadRun(double startPoint)
 				maxIndex_ = currTrial.index();
 			}
 			auto it = trials_.insert(currTrial);
-			
+			/*
 			if (!it.second) {
 				if (rand() % 2 == 0) {
 					trials_.erase(currInterval[0]);
@@ -88,7 +88,7 @@ void ParallelIndexMethod::threadRun(double startPoint)
 					trials_.erase(currInterval[1]);
 				}
 			}
-			
+			*/
 			// Копируем точки испытаний.
 			threadTrials = trials_;
 			mtx1_.unlock();
@@ -122,7 +122,7 @@ std::vector<double> ParallelIndexMethod::calculateMaxValuesDifference(const std:
 			// Итератор на предыдущий элемент множества.
 			std::set<PointTrial>::const_iterator itPrev = threadFixedIndex[i].cbegin();
 			// Итератор на текущий элемент множества.
-			std::set<PointTrial>::const_iterator itCurr = threadFixedIndex[i].cbegin();
+			std::set<PointTrial>::const_iterator itCurr = ++threadFixedIndex[i].cbegin();
 			for (; itPrev != --threadFixedIndex[i].cend() && itCurr != threadFixedIndex[i].cend(); ++itPrev, ++itCurr) {
 				// Вычисляем |z(i) - z(i-1)| / (x(i) - x(i-1)).
 				double tempM = fabs((*itCurr).value() - (*itPrev).value()) / ((*itCurr).x() - (*itPrev).x());

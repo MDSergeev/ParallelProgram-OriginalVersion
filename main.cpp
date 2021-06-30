@@ -33,6 +33,7 @@ int main() {
 	double a, b;
 	double eps;
 	double r;
+	int N;
 	
 	std::cout << "a = ";
 	std::cin >> a;
@@ -46,8 +47,11 @@ int main() {
 	std::cout << "Param R = ";
 	std::cin >> r;
 
+	std::cout << "Count Threads = ";
+	std::cin >> N;
+
 	Funcs funcs{f0, f1, f2, f3, fi};
-	
+	/*
 	OriginalIndexMethod im(a, b, eps, r, funcs);
 	unsigned int start_time = clock();
 	PointTrial imBestTrial = im.Run();
@@ -58,11 +62,11 @@ int main() {
 		<< "value = " << imBestTrial.value() << " | "
 		<< "index = " << imBestTrial.index() << " |" << std:: endl;
 	std::cout << "TIME = " << end_time - start_time << "ms" << std::endl;
-	
-	ParallelIndexMethod pim(a, b, eps, r, funcs, 6);
-	start_time = clock();
+	*/
+	ParallelIndexMethod pim(a, b, eps, r, funcs, N);
+	unsigned int start_time = clock();
 	PointTrial pimBestTrial = pim.Run();
-	end_time = clock();
+	unsigned int end_time = clock();
 	std::cout << "BEST TRIAL PARALLEL INDEX METHOD" << std::endl;
 	std::cout << std::fixed << std::setprecision(5)
 		<< "x = " << pimBestTrial.x() << " | "
